@@ -1,58 +1,10 @@
 ﻿data:
-  raw_data_path: data/raw/data.csv
-  ingested_data_path: data/ingested/data.csv
-  validated_data_path: data/validated/data.csv
-  processed_data_path: data/processed/features.csv
-  test_size: 0.2
-  random_state: 42
-  target_column: is_high_value
-  sample_size: 400000
+  raw: data/raw/data.csv
 
-validation:
-  min_rows: 100000
-  required_columns: [Invoice, StockCode, Description, Quantity, InvoiceDate, Price, Customer ID, Country]
-  drop_null_columns: [Description]
-  fill_null_columns: [Customer ID]
-  min_quantity: 1
-  min_price: 0.01
+  ingested: data/ingested/ingested.csv
 
-features:
-  categorical: [Country]
-  numerical: [Quantity, Price]
-  drop_columns: [Invoice, StockCode, Description, InvoiceDate, Customer ID]
-  target: is_high_value
+  validated: data/validated/validated.csv
 
-models:
-  random_forest:
-    n_estimators: 100
-    max_depth: 6
-    min_samples_split: 10
-    random_state: 42
+  processed: data/processed/processed.csv
 
-  xgboost:
-    n_estimators: 100
-    max_depth: 4
-    learning_rate: 0.1
-    random_state: 42
-
-  lightgbm:
-    n_estimators: 100
-    max_depth: 4
-    learning_rate: 0.1
-    num_leaves: 31
-    random_state: 42
-
-training:
-  cv_folds: 5
-  scoring_metric: f1
-
-selection:
-  metric: f1_score
-
-mlflow:
-  tracking_uri: sqlite:///mlflow.db
-  experiment_name: retail_transaction_classification
-
-docker:
-  image_name: vivu00001/mlops-pipeline
-  tag: latest
+target: HighValueCustomer

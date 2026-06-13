@@ -1,0 +1,57 @@
+stages:
+
+  ingestion:
+    cmd: python -m src.ingestion
+    deps:
+      - data/raw/data.csv
+    outs:
+      - data/ingested/ingested.csv
+
+  validation:
+    cmd: python -m src.validation
+    deps:
+      - data/ingested/ingested.csv
+    outs:
+      - data/validated/validated.csv
+
+  preprocessing:
+    cmd: python -m src.preprocessing
+    deps:
+      - data/validated/validated.csv
+    outs:
+      - data/processed/processed.csv
+
+  feature_engineering:
+    cmd: python -m src.feature_engineering
+    deps:
+      - data/processed/processed.csv
+    outs:
+      - artifacts/preprocessor.pkl
+      - artifacts/X_train.pkl
+      - artifacts/X_test.pkl
+      - artifacts/y_train.pkl
+      - artifacts/y_test.pkl
+
+  training:
+    cmd: python -m src.train
+    deps:
+      - artifacts/X_train.pkl
+      - artifacts/y_train.pkl
+    outs:
+      - artifacts/models
+
+  evaluation:
+    cmd: python -m src.evaluate
+    deps:
+      - artifacts/X_test.pkl
+      - artifacts/y_test.pkl
+      - artifacts/models
+    metrics:
+      - reports/metrics.json
+
+  best_model:
+    cmd: python -m src.select_best_model
+    deps:
+      - reports/metrics.json
+    outs:
+      - artifacts/best_model

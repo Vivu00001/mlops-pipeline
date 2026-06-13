@@ -1,6 +1,4 @@
 [core]
-    remote = localremote
-['remote "myremote"']
-    url = gdrive://1MJdTskl0OvN-nOUAR7VUyJ82Tp_qkyjM
-['remote "localremote"']
-    url = C:\Projects\dvc_storage
+    remote = localstorage
+['remote "localstorage"']
+    url = ../dvc_storage

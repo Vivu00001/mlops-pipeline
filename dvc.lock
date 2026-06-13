@@ -1,0 +1,117 @@
+schema: '2.0'
+stages:
+  ingestion:
+    cmd: python -m src.ingestion
+    deps:
+    - path: data/raw/data.csv
+      hash: md5
+      md5: 5d295417e543b29d40366cd75fb4c75a
+      size: 45580638
+    outs:
+    - path: data/ingested/ingested.csv
+      hash: md5
+      md5: 7665974d6f0d85c1744112a2a267506b
+      size: 46403334
+  validation:
+    cmd: python -m src.validation
+    deps:
+    - path: data/ingested/ingested.csv
+      hash: md5
+      md5: 7665974d6f0d85c1744112a2a267506b
+      size: 46403334
+    outs:
+    - path: data/validated/validated.csv
+      hash: md5
+      md5: 7665974d6f0d85c1744112a2a267506b
+      size: 46403334
+  preprocessing:
+    cmd: python -m src.preprocessing
+    deps:
+    - path: data/validated/validated.csv
+      hash: md5
+      md5: 7665974d6f0d85c1744112a2a267506b
+      size: 46403334
+    outs:
+    - path: data/processed/processed.csv
+      hash: md5
+      md5: 698795e0124efe9868d6ae0812daa7bb
+      size: 46932544
+  feature_engineering:
+    cmd: python -m src.feature_engineering
+    deps:
+    - path: data/processed/processed.csv
+      hash: md5
+      md5: 698795e0124efe9868d6ae0812daa7bb
+      size: 46932544
+    outs:
+    - path: artifacts/X_test.pkl
+      hash: md5
+      md5: 5c73b74abeee5c6930b2cebedb5a9244
+      size: 13309299
+    - path: artifacts/X_train.pkl
+      hash: md5
+      md5: 953fc64069c17eb8c49e9a4ab16931a3
+      size: 53235171
+    - path: artifacts/preprocessor.pkl
+      hash: md5
+      md5: fa72ebcf94a875b9b3dd7c2b0cf519c3
+      size: 399868
+    - path: artifacts/y_test.pkl
+      hash: md5
+      md5: 5bbc7c092d2dd61982a7a9a78c643957
+      size: 3435350
+    - path: artifacts/y_train.pkl
+      hash: md5
+      md5: 1eb802cd211fcf2ae63a20bc9606cb38
+      size: 13738814
+  training:
+    cmd: python -m src.train
+    deps:
+    - path: artifacts/X_train.pkl
+      hash: md5
+      md5: 953fc64069c17eb8c49e9a4ab16931a3
+      size: 53235171
+    - path: artifacts/y_train.pkl
+      hash: md5
+      md5: 1eb802cd211fcf2ae63a20bc9606cb38
+      size: 13738814
+    outs:
+    - path: artifacts/models
+      hash: md5
+      md5: b7708f5d7950c260e127cd25d77eb34b.dir
+      size: 4573743
+      nfiles: 3
+  evaluation:
+    cmd: python -m src.evaluate
+    deps:
+    - path: artifacts/X_test.pkl
+      hash: md5
+      md5: 5c73b74abeee5c6930b2cebedb5a9244
+      size: 13309299
+    - path: artifacts/models
+      hash: md5
+      md5: b7708f5d7950c260e127cd25d77eb34b.dir
+      size: 4573743
+      nfiles: 3
+    - path: artifacts/y_test.pkl
+      hash: md5
+      md5: 5bbc7c092d2dd61982a7a9a78c643957
+      size: 3435350
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 2ee5e777f73c4ee2c18c7ff25d5f31c5
+      size: 646
+  best_model:
+    cmd: python -m src.select_best_model
+    deps:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 2ee5e777f73c4ee2c18c7ff25d5f31c5
+      size: 646
+    outs:
+    - path: artifacts/best_model
+      hash: md5
+      md5: 230f6d9fe361eb71d93b6c2ae273cce1.dir
+      size: 108933
+      nfiles: 2
